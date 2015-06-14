@@ -1,0 +1,72 @@
+{
+    "exercises":[
+        {
+            "name":"PUSHUPS",
+            "max":"30",
+            "min":"10",
+            "unit":"reps"
+        },
+        {
+            "name":"PLANK",
+            "max":"60",
+            "min":"20",
+            "unit":"seconds"
+        },
+        {
+            "name":"SITUPS",
+            "max":"25",
+            "min":"5",
+            "unit":"reps"
+        },
+        {
+            "name":"TOE-TOUCHES",
+            "max":"30",
+            "min":"5",
+            "unit":"reps"
+        },
+        {
+            "name":"BODY-WEIGHT SQUATS",
+            "max":"50",
+            "min":"15",
+            "unit":"reps"
+        },
+        {
+            "name":"BURBEES",
+            "max":"25",
+            "min":"5",
+            "unit":"reps"
+        }
+        ,
+        {
+            "name":"LUNGES",
+            "max":"30",
+            "min":"10",
+            "unit":"reps"
+        },
+        {
+            "name":"CALF RAISES",
+            "max":"60",
+            "min":"20",
+            "unit":"reps"
+        },
+        {
+            "name":"SIDE PLANK",
+            "max":"60",
+            "min":"20",
+            "unit":"seconds"
+        },
+        {
+            "name":"ARM CIRCLES",
+            "max":"60",
+            "min":"10",
+            "unit":"seconds"
+        },
+        {
+            "name":"BICYCLE CRUNCHES",
+            "max":"45",
+            "min":"15",
+            "unit":"reps"
+        }
+    ]
+}
+
