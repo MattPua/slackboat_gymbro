@@ -7,6 +7,9 @@ IMPORTS
 import json
 import requests
 import random
+import csv
+from datetime import datetime
+
 from settings import *
 '''
 ====================================
@@ -20,12 +23,12 @@ BASE_PARAMS          = {
 
 
 CMD_NEW_MESSAGE      = 'chat.postMessage'
-CMD_GET_CHANNEL_INFO ='channels.info'
+CMD_GET_CHANNEL_INFO =' channels.info'
 
 
 JSON_EXERCISES       = "exercises.json"
 JSON_INSPIRATION     = "inspiration.json"
-
+CSV_RESULTS          = "results.csv"
 
 
 '''
@@ -80,6 +83,9 @@ def create_exercise_message(member,exercise):
     inspiration = get_random_inspiration()
 
     message = "<@%s> %s *_%s_ for %s %s*! " % (member,inspiration,exercise_name,reps_to_do,unit)
+
+    log_exercise(member,exercise,reps_to_do)
+
     return message
 
 """
@@ -109,6 +115,16 @@ def new_message(member,exercise):
 
     response = requests.post(BASE_URL+CMD_NEW_MESSAGE,params=new_message_params)
 
+    print 'SlackBot_GymBro has posted a new challenge!'
+
+
+"""
+Adds the entry into a csv file. Contains the user_id, exercise name, # reps, and date
+"""
+def log_exercise(random_member,exercise,reps_to_do):
+    with open(CSV_RESULTS,"a") as file:
+        writer = csv.writer(file)
+        writer.writerow([random_member,exercise['name'],reps_to_do,datetime.now()])
 
 '''
 ====================================
@@ -122,8 +138,9 @@ def main():
         random_member = get_random_member(members)
 
         new_message(random_member,exercise)
+
     except Exception as e:
-        print e.value
+        print e
 
 
 main()

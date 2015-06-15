@@ -1,0 +1,3 @@
+## SlackBot Gym Bro! 
+[Based off of brandonshin/slackbot-workout](https://github.com/brandonshin/slackbot-workout/blob/master/slackbotExercise.py)
+
