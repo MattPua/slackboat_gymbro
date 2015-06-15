@@ -8,6 +8,7 @@ import json
 import requests
 import random
 import csv
+import traceback
 from datetime import datetime
 
 from settings import *
@@ -23,7 +24,7 @@ BASE_PARAMS          = {
 
 
 CMD_NEW_MESSAGE      = 'chat.postMessage'
-CMD_GET_CHANNEL_INFO =' channels.info'
+CMD_GET_CHANNEL_INFO = 'channels.info'
 
 
 JSON_EXERCISES       = "exercises.json"
@@ -46,7 +47,9 @@ def get_channel_users(channelId):
     get_channel_params = {
     "channel": channelId,
     }
+
     get_channel_params = dict(get_channel_params.items() + BASE_PARAMS.items())
+
     response           = requests.post(BASE_URL+CMD_GET_CHANNEL_INFO,params=get_channel_params)
     data               = response.json()
     members            = data['channel']['members']
@@ -140,6 +143,8 @@ def main():
         new_message(random_member,exercise)
 
     except Exception as e:
+        traceback.print_exc()
+        print "ERROR: " 
         print e
 
 
