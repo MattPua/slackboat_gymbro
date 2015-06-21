@@ -1,3 +1,50 @@
 ## SlackBot Gym Bro! 
-[Based off of brandonshin/slackbot-workout](https://github.com/brandonshin/slackbot-workout/blob/master/slackbotExercise.py)
+Based off of [brandonshin/slackbot-workout](https://github.com/brandonshin/slackbot-workout/blob/master/slackbotExercise.py)
 
+### Background
+This is a little runnable script that works off of the [Slack](https://slack.com/) API. 
+
+It makes use of their SlackBot Feature to post a message to a 'channel' via their API which in this case, we've setup to encourage someone to do an exercise.
+
+To run the script manually, you just need to execute the script.py file. This will call create one mention of a user to do a randomly chosen exercise for a random number of reps from a list provided.
+
+To set this up to run more frequently, the usage of cron jobs was used in this case, which can be read about below.
+
+### Configuration
+In order to get this script running on your own, you just need to set 2 tokens. One is your own slack API token, which can be retrieved from Slack. 
+
+The second token is the channel that you'd like to run these messages in. ONce you know what channel you want to use, you can assign below the channel_id and it will post messages in that channel.
+
+>   TOKEN                = 'YOUR_SLACK_TOKEN'
+>   
+>   CHANNEL_GYMLIFE      = "YOUR_CHANNEL_ID"
+
+### Setting Regular Intervals
+This script is run via a cron job at set intervals. 
+You can edit your cronjobs by using:
+> crontab -e
+
+Example:
+To only run this after 8pm on weekdays, and after 2pm on weekends, the following cron jobs would suffice:
+>     # Run the task during the weekdays
+>     */60 20,21,22,23 * * 1,2,3,4,5 *PATH_TO_SCRIPT*/slackbot_gymbro/script.py;
+>     
+>     # Run the task during the weekends
+>     */60 14,15,16,17,18,19,20,21,22,23 * * 0,6 *PATH_TO_SCRIPT*/slackbot_gymbro/script.py;
+
+The above cronjobs will run once an hour after 8pm during weekdays and will run once an hour after 2pm on Weekends.
+
+### Choosing Exercises
+There is a file called *exercises.json*. The script will load the list of activities to choose from, from this file. You can add or takeaway new exercises on the fly by adding in a new exercise directly into the file itself.
+
+Example:
+>         {
+            "name":"BURBEES",
+            "max":"25",
+            "min":"5",
+            "unit":"reps"
+        }
+
+### Saving Results
+Every new result is saved in a csv file called *results.csv*. Each entry will contain the Slack UserID, the exercise, number of reps, and when it happened. 
+>    SLACK_ID,SITUPS,8,2015-06-15 00:01:21.457458
