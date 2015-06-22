@@ -112,7 +112,9 @@ def new_message(member,exercise):
         "channel":CHANNEL_GYMLIFE,
         "username":"GymBot#gains",
         "link_names":"1",
-        "text":message
+        "text":message,
+        "icon_emoji": ":muscle:",
+        "as_user":"false"
     }
     new_message_params = dict(new_message_params.items() + BASE_PARAMS.items())
 
