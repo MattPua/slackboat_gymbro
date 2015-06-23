@@ -22,11 +22,10 @@ BASE_PARAMS          = {
 "token": TOKEN,
 }
 
-
 CMD_NEW_MESSAGE      = 'chat.postMessage'
 CMD_GET_CHANNEL_INFO = 'channels.info'
 
-
+JSON_CONFIG          = "config.json"
 JSON_EXERCISES       = "exercises.json"
 JSON_INSPIRATION     = "inspiration.json"
 CSV_RESULTS          = "results.csv"
@@ -56,12 +55,32 @@ def get_channel_users(channelId):
     return members
 
 """
-Returns a random member from the set
+Returns an array of a random number of users chosen for the exercise
+The number of users chosen is randomized between 1 and MIN(total members in channel, max_users_to_choose set in the config file)
 """
-def get_random_member(members):
-    total_members = len(members)
-    random_member = random.randint(0,len(members)-1)
-    return members[random_member]
+def get_random_members(members):
+    total_members              = len(members)
+    random_num_users_to_choose = 1
+    total_members_chosen       = 0
+    list_of_members            = []
+    # Selects the total number of users to choose at a time based randomized between 1 and the MIN value of (total users, total users to choose from in the config)
+    with open(JSON_CONFIG) as file:
+        data                       = json.load(file)
+        max_users_to_choose        = data["max_users_to_choose"]
+        max_users_to_choose        = min(total_members,max_users_to_choose)
+        random_num_users_to_choose = random.randint(1,max_users_to_choose)
+
+    # keep adding random users to the total list
+    # if we've selected a repeat user, continue searching
+    while total_members_chosen < random_num_users_to_choose:
+        random_member = random.randint(0,len(members)-1)
+        if list_of_members.count(members[random_member]):
+            continue
+
+        list_of_members.append(members[random_member])
+        total_members_chosen+=1
+
+    return list_of_members
 
 """
 Returns a random Exercise from a JSON file along with maximum and minimum rep count
@@ -76,18 +95,23 @@ def get_random_exercise():
 """
 Creates the message that you want to post on Slack for the exercise announcement
 """
-def create_exercise_message(member,exercise):
+def create_exercise_message(list_of_members,exercise):
     exercise_name = exercise['name']
     min_reps      = int(exercise['min'])
     max_reps      = int(exercise['max'])
     unit          = exercise['unit']
 
-    reps_to_do = random.randint(min_reps,max_reps)
+    reps_to_do  = random.randint(min_reps,max_reps)
     inspiration = get_random_inspiration()
 
-    message = "<@%s> %s *_%s_ for %s %s*! " % (member,inspiration,exercise_name,reps_to_do,unit)
+    message     = ""
 
-    log_exercise(member,exercise,reps_to_do)
+    for member in list_of_members:
+        message+="<@%s> " % (member)
+
+    message+="%s *_%s_ for %s %s*! " % (inspiration,exercise_name,reps_to_do,unit)
+
+    log_exercise(list_of_members,exercise,reps_to_do)
 
     return message
 
@@ -104,9 +128,9 @@ def get_random_inspiration():
 """
 Sends the new message to Slack
 """
-def new_message(member,exercise):
+def new_message(list_of_members,exercise):
 
-    message = create_exercise_message(member,exercise)
+    message = create_exercise_message(list_of_members,exercise)
 
     new_message_params = {
         "channel":CHANNEL_GYMLIFE,
@@ -120,16 +144,17 @@ def new_message(member,exercise):
 
     response = requests.post(BASE_URL+CMD_NEW_MESSAGE,params=new_message_params)
 
-    print 'SlackBot_GymBro has posted a new challenge!'
+    print 'SlackBot_GymBro has posted a new challenge to %s users!' % (len(list_of_members))
 
 
 """
 Adds the entry into a csv file. Contains the user_id, exercise name, # reps, and date
 """
-def log_exercise(random_member,exercise,reps_to_do):
+def log_exercise(list_of_members,exercise,reps_to_do):
     with open(CSV_RESULTS,"a") as file:
         writer = csv.writer(file)
-        writer.writerow([random_member,exercise['name'],reps_to_do,datetime.now()])
+        for member in list_of_members:
+            writer.writerow([member,exercise['name'],reps_to_do,datetime.now()])
 
 '''
 ====================================
@@ -138,12 +163,11 @@ MAIN
 '''
 def main():
     try:
-        exercise      = get_random_exercise()
-        members       = get_channel_users(CHANNEL_GYMLIFE)
-        random_member = get_random_member(members)
+        exercise               = get_random_exercise()
+        members                = get_channel_users(CHANNEL_GYMLIFE)
+        list_of_random_members = get_random_members(members)
 
-        new_message(random_member,exercise)
-
+        new_message(list_of_random_members,exercise)
     except Exception as e:
         traceback.print_exc()
         print "ERROR: " 
