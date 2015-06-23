@@ -66,7 +66,7 @@ def get_random_members(members):
     # Selects the total number of users to choose at a time based randomized between 1 and the MIN value of (total users, total users to choose from in the config)
     with open(JSON_CONFIG) as file:
         data                       = json.load(file)
-        max_users_to_choose        = data["max_users_to_choose"]
+        max_users_to_choose        = int(data["max_users_to_choose"])
         max_users_to_choose        = min(total_members,max_users_to_choose)
         random_num_users_to_choose = random.randint(1,max_users_to_choose)
 
@@ -88,7 +88,7 @@ Returns a random Exercise from a JSON file along with maximum and minimum rep co
 def get_random_exercise():
     with open(JSON_EXERCISES) as file:
         data = json.load(file)
-        exercises = int(data['exercises'])
+        exercises = data['exercises']
         random_exercise = random.randint(0,len(exercises)-1)
         return exercises[random_exercise]
 
