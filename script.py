@@ -88,7 +88,7 @@ Returns a random Exercise from a JSON file along with maximum and minimum rep co
 def get_random_exercise():
     with open(JSON_EXERCISES) as file:
         data = json.load(file)
-        exercises = data['exercises']
+        exercises = int(data['exercises'])
         random_exercise = random.randint(0,len(exercises)-1)
         return exercises[random_exercise]
 
