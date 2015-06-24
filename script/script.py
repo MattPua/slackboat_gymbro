@@ -25,10 +25,10 @@ BASE_PARAMS          = {
 CMD_NEW_MESSAGE      = 'chat.postMessage'
 CMD_GET_CHANNEL_INFO = 'channels.info'
 
-JSON_CONFIG          = "config.json"
-JSON_EXERCISES       = "exercises.json"
-JSON_INSPIRATION     = "inspiration.json"
-CSV_RESULTS          = "results.csv"
+JSON_CONFIG          = "../json/config.json"
+JSON_EXERCISES       = "../json/exercises.json"
+JSON_INSPIRATION     = "../json/inspiration.json"
+CSV_RESULTS          = "../csv/results.csv"
 
 
 '''
@@ -63,6 +63,7 @@ def get_random_members(members):
     random_num_users_to_choose = 1
     total_members_chosen       = 0
     list_of_members            = []
+    
     # Selects the total number of users to choose at a time based randomized between 1 and the MIN value of (total users, total users to choose from in the config)
     with open(JSON_CONFIG) as file:
         data                       = json.load(file)
@@ -82,6 +83,7 @@ def get_random_members(members):
 
     return list_of_members
 
+
 """
 Returns a random Exercise from a JSON file along with maximum and minimum rep count
 """
@@ -91,6 +93,17 @@ def get_random_exercise():
         exercises = data['exercises']
         random_exercise = random.randint(0,len(exercises)-1)
         return exercises[random_exercise]
+
+"""
+Gets a random message to attach to the announcement from a JSON file
+"""
+def get_random_inspiration():
+    with open(JSON_INSPIRATION) as file:
+        data = json.load(file)
+        inspiration = data['message']
+        random_inspiration = random.randint(0,len(inspiration)-1)
+        return inspiration[random_inspiration]['text']
+
 
 """
 Creates the message that you want to post on Slack for the exercise announcement
@@ -111,19 +124,10 @@ def create_exercise_message(list_of_members,exercise):
 
     message+="%s *_%s_ for %s %s*! " % (inspiration,exercise_name,reps_to_do,unit)
 
-    log_exercise(list_of_members,exercise,reps_to_do)
+
+    # log_exercise(list_of_members,exercise,reps_to_do)
 
     return message
-
-"""
-Gets a random message to attach to the announcement from a JSON file
-"""
-def get_random_inspiration():
-    with open(JSON_INSPIRATION) as file:
-        data = json.load(file)
-        inspiration = data['message']
-        random_inspiration = random.randint(0,len(inspiration)-1)
-        return inspiration[random_inspiration]['text']
 
 """
 Sends the new message to Slack

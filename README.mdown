@@ -19,6 +19,20 @@ The second token is the channel that you'd like to run these messages in. ONce y
 >   
 >   CHANNEL_GYMLIFE      = "YOUR_CHANNEL_ID"
 
+
+### Variable Settings
+Various options can be enabled to vary the program. All options are stored in the *config.json* file. 
+
+The Following settings are available:
+
+* max_users_to_choose:
+
+        Setting Number of users chosen at a time.
+        The actual number of users chosen at a time is randomized between 1 and the min(max_users_to_choose, Total Members In Channel)
+
+* enable_ciruits
+* max_exercises
+
 ### Setting Regular Intervals
 This script is run via a cron job at set intervals. 
 You can edit your cronjobs by using:
