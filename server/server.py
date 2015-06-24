@@ -78,11 +78,11 @@ def parse_text(text):
 
 def execute_command(parameters):
     print parameters
-    if parameters['item_1'] == 'AddNewExercise':
+    if parameters['item_1'].lower() == 'AddNewExercise'.lower():
         exercise = parameters['item_2']
         exercise = exercise.replace("_"," ")
-        max_reps = parameters['item_3']
-        min_reps = parameters['item_4']
+        min_reps = parameters['item_3']
+        max_reps = parameters['item_4']
         rep_type = parameters['item_5']
         add_exercise_to_file(exercise,max_reps,min_reps,rep_type)
 
