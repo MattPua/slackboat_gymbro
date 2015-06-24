@@ -1,17 +1,15 @@
 from flask import Flask
+from settings import *
+
 app = Flask(__name__)
 
 
+@app.route("/slack_gymlife")
+def new_exercise():
+    print request
 
-
-@app.route("/")
-def hello_world():
-    return "Hello world!"
-
-@app.route("/hello")
-def yo():
-    return "Hello"
 
 if __name__ == '__main__':
-    app.debug = True
-    app.run()
+    app.debug = DEBUG
+    app.run(host='0.0.0.0')
+
